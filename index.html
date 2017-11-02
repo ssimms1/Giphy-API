@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Animal Buttons</title>
+</head>
+<body>
+    <button data-animal="cat">The fancy cat</button>
+    <button data-animal="dog">The fancy dog</button>
+    <button data-animal="bird">The fancy bird</button>
+    <div id="gifs-appear-here">
+    </div>
+    <script src="http://code.jquery.com/jquery-2.1.3.min.js"></script>
+    <script type="text/javascript">
+        $("button").on("click", function () {
+            // How to get attribute with jquery
+            var animal = $(this).attr("data-animal");
+            console.log(animal);
+            var queryURL = "http://api.giphy.com/v1/gifs/search?q=" + animal +
+                "&api_key=MMMFgxvb0riPuTfu5YYqBwbW1dK6SXP7";
+            //   http://api.giphy.com/v1/gifs/search?q=animal&api_key=MMMFgxvb0riPuTfu5YYqBwbW1dK6SXP7
+            $.ajax({
+                    url: queryURL,
+                    method: "GET"
+                })
+                .done(function (response) {
+                    console.log(queryURL);
+                    console.log(response);
+                    var results = response.data;
+                    console.log("data");
+                    console.log(results);
+                    for (var i = 0; i < results.length; i++) {
+                        // results[i].images.fixed_height_still.url;
+                        // console.log(results[0].images.fixed_height.url);
+                        // Creating and storing a div tag
+                        var animalDiv = $("<div>");
+                        // Creating a paragraph tag with the result item's rating
+                        var p = $("<p>").text("Rating: " + results[i].rating);
+                        // Creating and storing an image tag
+                        var animalImage = $("<img>");
+                        // Setting the src attribute of the image to a property pulled off the result item
+                        animalImage.attr("src", results[i].images.fixed_height.url);
+                        // Appending the paragraph and image tag to the animalDiv
+                        animalDiv.append(p);
+                        animalDiv.append(animalImage);
+                        // Prependng the animalDiv to the HTML page in the "#gifs-appear-here" div
+                        $("#gifs-appear-here").prepend(animalDiv);
+                    }
+                });
+        });
+    </script>
+</body>
+</html>
